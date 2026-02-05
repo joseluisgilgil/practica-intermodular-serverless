@@ -70,3 +70,10 @@ Resources:
         - AttributeName: noteId
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
+
+# Salidas para mostrar el nombre de las funciones que se han creado
+Outputs:
+  getNotesFunctionName:
+    Value: !Ref getNotes
+  postNotesFunctionName:
+    Value: !Ref postNotes

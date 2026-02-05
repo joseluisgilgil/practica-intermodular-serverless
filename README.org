@@ -123,8 +123,10 @@ Estructuraremos el desarrollo de la aplicación en *3 fases*:
 Esta práctica *se entregará a través de GitHub*. Para poder realizarla, debes:
 - *Instalar en tu equipo* el editor *Visual Studio Code*
 - Tener una *cuenta de GitHub*
+- [[https://nodejs.org/es/download][Instalar NodeJS]] en tu equipo
+- [[https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html][Instalar la herramienta SAM]] en tu equipo
 
-En primer lugar, debes *realizar un fork* del repositorio. Un fork es una *copia del repositorio* que se almacena en tu cuenta de GitHub. De esta manera, el repositorio *será copiado a tu cuenta* y podrás *realizar cambios en él*.
+Una vez tengas todo lo anterior, debes *realizar un fork* del repositorio de la práctica en GitHub. Un fork es una *copia del repositorio* que se almacena en tu cuenta de GitHub. De esta manera, el repositorio *será copiado a tu cuenta* y podrás *realizar cambios en él*.
 
 [[./imagenes/02-fork.gif]]
 
@@ -224,12 +226,67 @@ Crea una tabla en DynamoDB *a través de la consola de AWS*. Utiliza *capacidad 
 
 Como nombre de la tabla, utiliza ~inter-serverless-manual-TUS_INICIALES~, sustituyendo ~TUS_INICIALES~ por el valor correspondiente.
 
-** Creación de las *funciones lambda* que constituirán el backend
-Como puedes comprobar, en el repositorio hay una carpeta denominada ~proyecto~. Dentro de ella hay una estructura de carpetas para una *aplicación SAM*. Sin embargo, para empezar, *no utilizaremos SAM para el despliegue*. Haremos un *despliegue manual*, subiendo el código directamente a la consola. Más adelante realizaremos el despliegue mediante SAM.
+** Creación y despliegue de las funciones lambda del backend
+Como puedes comprobar, en el repositorio hay una carpeta denominada ~proyecto~. Dentro de ella hay una estructura de carpetas para una *aplicación SAM*, que nos permitirá realizar el *despliegue del backend* de manera sencilla, sin tener que subir el código de manera manual.
+
+Se proporcionan *dos funciones ya creadas*. Puedes ver su código dentro de la carpeta ~handlers~. También puedes echar un vistazo a la plantilla de SAM, ~template.yml~.
+
+Para instalar las *librerías y dependencias de la aplicación*, sitúate en la carpeta ~proyecto~ y ejecuta el siguiente comando:
+#+begin_src
+  npm install
+#+end_src
+
+A continuación, para realizar el despliegue, ejecuta el siguiente comando:
+#+begin_src bash
+  sam deploy --guided
+#+end_src
+
+Indica un nombre para el stack que incluya tu *nombre y apellidos*. Al finalizar, comprueba que se han creado dos funciones accediendo al *servicio Lambda* en la consola de AWS.
+
+#+begin_quote
+[!NOTE]
+Si observas el código de una de las funciones creadas en la consola de AWS, observarás que se ha subido toda la carpeta junto con una carpeta ~node_modules~, que incluye las dependencias y librerías del proyecto.
+#+end_quote
+
+Una vez creadas las funciones, puedes *editar el código* desde la consola de AWS para realizar *cambios y pruebas rápidas* (recuerda pulsar en el botón de *desplegar* al finalizar). También puedes *abrir el código de una función desde Visual Studio Code*. Eso sí, recuerda que, si haces un cambio por alguno de estos métodos, deberás posteriormente *actualizar el código de la carpeta del repositorio* para dejarlo igual.
+
+Otra opción más sencilla es *realizar cambios en el código de la carpeta del repositorio* y ejecutar el siguiente *comando* cada vez que guardes un nuevo cambio y quieras desplegarlo en Lambda para probarlo:
+#+begin_src bash
+  # Observa que ya no se incluye la opción "--guided", que solo se usa la primera vez
+  sam deploy
+#+end_src
+
+El código de las funciones se encuentra convenientemente *comentado*. *Inspecciona detalladamente el código* para entender cómo funciona.
+
+#+begin_quote
+[!IMPORTANT]
+El lenguaje elegido es JavaScript. No se pretende que se comprenda el 100% del código si no se tiene experiencia con ese programa. Será necesario únicamente una comprensión a alto nivel.
+#+end_quote
+
+Las funciones que vamos a desarrollar serán ejecutadas por la por la *API* que desarrollaremos en la fase 2 mediante [[https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html][integración proxy]]. Esto quiere decir que el *evento* que le llegará al manejador (/handler/) de la función tendrá un [[https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format][formato específico]]. Puedes observar que el código de las funciones hace referencia a algunas de las propiedades definidas en ese formato, como ~event.httpMethod~ o ~event.body~.
 
 ** Testeo del backend
+Para probar las funciones, se proporciona un conjunto de ficheros con *ejemplos de eventos* en la carpeta ~events~. Puedes utilizarlos como base para realizar pruebas de las funciones en la *consola de AWS* (copiando su contenido y pegándolo en el cuadro de texto correspondiente) o a través de la *CLI* mediante el siguiente comando:
+#+begin_src bash
+  # Suponiendo que te encuentres en la carpeta "proyecto"
+  aws lambda invoke --function-name NOMBRE_FUNCION --payload fileb://events/NOMBRE_FICHERO_EVENTO.json salida.json
+#+end_src
 
-** Despliegue del backend mediante *AWS SAM*
+#+begin_quote
+[!NOTE]
+Recuerda que, tal como hemos explicado antes, los eventos tienen el [[https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format][formato específico de la integración proxy de Lambda]].
+#+end_quote
+
+De esta manera, el resultado devuelto por la función será guardado en el fichero ~salida.json~. Puedes visualizar su contenido en el editor para ver el resultado devuelto por la función.
+
+#+begin_quote
+[!IMPORTANT]
+Verás que, cuando ejecutas la función, obtienes un código de éxito que se muestra en la consola. Es posible que recibas un código 200 (éxito) en la consola y, al mismo tiempo, aparezca un código 400 (error) en el fichero de salida.
+
+El primer código corresponde al *resultado de la ejecución de la función*. Si obtienes un código 200, significa que la función se ha ejecutado correctamente.
+
+El segundo, el que aparece dentro del fichero de salida, se corresponde con el *resultado DEVUELTO por la función*. El código de la función utiliza bloques del tipo ~try...catch~, para controlar errores en tiempo de ejecución (por ejemplo, errores en la consulta a la base de datos). Si se produce alguno de esos errores, será controlado por el código y se devolverá un código de error al usuario final. En este caso, la función Lambda se habrá ejecutado correctamente, pero el proceso interno que ejecuta el programa (consulta a BD, por ejemplo) habrá generado un error.
+#+end_quote
 
 * Fase 2
 
