@@ -133,9 +133,6 @@ En esta primera fase realizaremos la implementación del *backend* de la aplicac
   !include AWSPuml/DeveloperTools/ToolsandSDKs.puml
   !include AWSPuml/Groups/AWSAccount.puml
 
-  left to right direction
-
-
   AWSAccountGroup(cuenta, "Cuenta AWS") {
     ToolsandSDKs(sdks, "Herramientas\nSAM\nIDEs\nSDK", "")
     LambdaLambdaFunction(lambdaGetNotes, "Leer notas", "")
