@@ -91,9 +91,8 @@ Estructuraremos el desarrollo de la aplicación en *3 fases*:
 1. *Fase 1*
    1. Diseño de la base de datos
    2. Creación de la *base de datos*
-   3. Creación de las *funciones lambda* que constituirán el backend
+   3. *Creación* y *despliegue* mediante *AWS SAM* de las *funciones lambda* que constituirán el backend
    4. Testeo del backend
-   5. Despliegue del backend mediante *AWS SAM*
 2. *Fase 2*
    1. Despliegue del *frontend* en S3
    2. Creación de un *CDN* (Cloudfront) para el frontend
