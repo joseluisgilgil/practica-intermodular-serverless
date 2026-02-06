@@ -250,6 +250,11 @@ El código de las funciones se encuentra convenientemente *comentado*. *Inspecci
 El lenguaje elegido es JavaScript. No se pretende que se comprenda el 100% del código si no se tiene experiencia con dicho lenguaje. Será necesaria únicamente una comprensión a alto nivel.
 #+end_quote
 
+#+begin_quote
+[!IMPORTANT]
+El código de las funciones Lambda hace uso de un fichero de librería, ~src/auxFunctions.mjs~, en el que están definidas las acciones a realizar, como consultas en la base de datos, creación de notas, etc. De esta manera se separa la lógica del controlador de la lógica de negocio.
+#+end_quote
+
 Las funciones que vamos a desarrollar serán ejecutadas por la por la *API* que desarrollaremos en la fase 2 mediante [[https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html][integración proxy]]. Esto quiere decir que el *evento* que le llegará al manejador (/handler/) de la función tendrá un [[https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format][formato específico]]. Puedes observar que el código de las funciones hace referencia a algunas de las propiedades definidas en ese formato, como ~event.httpMethod~ o ~event.body~.
 
 ** Testeo del backend
@@ -277,9 +282,10 @@ El segundo, el que aparece dentro del fichero de salida, se corresponde con el *
 
 ** Creación del resto de las funciones del backend
 *Crea las funciones que faltan* en el backend. Para ello, deberás:
-1. Crear el *fichero con el handler* correspondiente
-2. *Modificar la plantilla* ~template.yml~ para *añadir las funciones* que faltan
-2. *Modificar la plantilla* ~template.yml~ para *crear un bucket S3* para que sea utilizado como almacenamiento por la función ~processNote~
+1. Añadir la funcionalidad correspondiente al archivo ~src/auxFunctions.mjs~
+2. Crear el *fichero con el handler* correspondiente
+3. *Modificar la plantilla* ~template.yml~ para *añadir las funciones* que faltan
+4. *Modificar la plantilla* ~template.yml~ para *crear un bucket S3* para que sea utilizado como almacenamiento por la función ~processNote~
 
 Las funciones que faltan son:
 - ~getNote~ - Devolverá una nota específica de un usuario determinado. Necesitará el ~noteId~ y el usuario autenticado.
@@ -295,8 +301,26 @@ Las funciones que faltan son:
 
 #+begin_quote
 [!NOTE]
+Puedes consultar ejemplos de cómo realizar llamadas a la API de AWS desde JavaScript en la [[https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_code_examples.html][documentación]]. También puedes consultar la [[https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/][referencia de la API de JavaScript]].
+
+Por supuesto, puedes utilizar cualquier otra herramienta que genere código, incluida la *IA*.
+#+end_quote
+
+#+begin_quote
+[!NOTE]
 En el diagrama de arquitectura inicial puedes ver qué *métodos* de API serán utilizados para cada acción.
 #+end_quote
+
+#+begin_quote
+[!NOTE]
+En los archivos de código se ha marcado con ~TODO~ los puntos donde se debería añadir código.
+#+end_quote
+
+#+begin_quote
+[!IMPORTANT]
+Puedes utilizar el fichero ~SKELETON.mjs~ como base para crear las funciones. Recuerda también que deberás añadir nueva funcionalidad al fichero ~auxFunctions.mjs~.
+#+end_quote
+
 
 * Fase 2
 
