@@ -140,7 +140,7 @@ Por último, es posible que realicemos *cambios en el enunciado* o añadamos nue
 
 #+begin_quote
 [!IMPORTANT]
-*No es necesario realizar capturas* en esta práctica. Simplemente, realiza las modificaciones en los ficheros correspondientes, sube los cambios a GitHub y ha una Pull Request.
+*No es necesario realizar capturas* en esta práctica. Simplemente, realiza las modificaciones en los ficheros correspondientes, sube los cambios a GitHub y haz una Pull Request.
 
 *No destruyas los recursos creados en AWS*. De esta manera, podremos comprobar lo que vayas haciendo. Recuerda que son servicios *serverless*, así que no tendrán apenas coste.
 #+end_quote
