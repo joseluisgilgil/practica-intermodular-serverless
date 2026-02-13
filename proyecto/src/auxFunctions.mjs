@@ -56,7 +56,7 @@ async function textToSpeech(text) {
   const command = new SynthesizeSpeechCommand({
     Text: text,
     OutputFormat: "mp3",
-    VoiceId: "Joanna", // Puedes cambiar este valor si lo deseas. Consulta la doc de Polly
+    VoiceId: "Lucia", // Puedes cambiar este valor si lo deseas. Consulta la doc de Polly
   });
 
   const response = await pollyClient.send(command);
